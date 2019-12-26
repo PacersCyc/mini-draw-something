@@ -1,15 +1,30 @@
 import React from 'react'
+import { hot } from 'react-hot-loader'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import Loadable from 'react-loadable'
 
-import imgSrc from './assets/someone.jpg'
+import 'antd-mobile/dist/antd-mobile.css'
 import styles from './App.scss'
 
-function App(props) {
+function Loading() {
   return (
-    <div className={styles.app}>
-      app
-      <img src={imgSrc} alt=""/>
-    </div>
+    <div>loading...</div>
   )
 }
 
-export default App
+const Home = Loadable({
+  loader: () => import('@pages/Home/index.jsx'),
+  loading: Loading
+})
+
+function App(props) {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/" component={Home} exact />
+      </Switch>
+    </Router>
+  )
+}
+
+export default hot(module)(App)
