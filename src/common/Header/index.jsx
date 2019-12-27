@@ -3,13 +3,18 @@ import styles from './style.scss'
 
 const Header = (props) => {
   const {
-    title
+    title,
+    left,
+    right
   } = props
 
   return (
     <div className={styles.headerWrapper}>
-      <span></span>
+      <span className={styles.headerLeft}>
+        {left}
+      </span>
       <span className={styles.title}>{title}</span>
+      <span className={styles.headerRight}>{right}</span>
     </div> 
   )
 }

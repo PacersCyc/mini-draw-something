@@ -1,0 +1,56 @@
+.home {
+  .user-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    .user-name {
+      font-size: 30px;
+    }
+  }
+
+  .no-room {
+    text-align: center;
+    font-size: 20px;
+    color: grey;
+  }
+
+  .room-list {
+    padding: 0;
+    .room-item {
+      list-style: none;
+      margin-bottom: 14px;
+      border-bottom: 1px solid #ccc;
+
+      .room-info {
+        display: flex;
+        align-items: center;
+        background: blue;
+        color: #fff;
+        padding: 10px 15px;
+
+        &.disable-enter {
+          background: red;
+        }
+
+        .room-master {
+          flex: 1;
+        }
+      }
+
+      .room-player {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        .player-count {
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  .online-count {
+    margin-top: 20px;
+    text-align: center;
+  }
+}

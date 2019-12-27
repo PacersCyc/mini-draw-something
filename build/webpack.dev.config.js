@@ -1,3 +1,4 @@
+const path = require('path')
 const webpackMerge = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const baseConfig = require('./webpack.base.config')
@@ -13,7 +14,7 @@ module.exports = webpackMerge(baseConfig, {
   devServer: {
     historyApiFallback: true,
     hot: true,
-    contentBase: false,
+    // contentBase: false,
     port: 9090,
     publicPath: '/',
     proxy: {}

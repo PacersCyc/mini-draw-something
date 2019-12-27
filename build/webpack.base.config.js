@@ -13,7 +13,8 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, '../dist'),
-    filename: 'js/[name].[hash].js'
+    filename: 'js/[name].[hash].js',
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -23,7 +24,19 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(sa|sc|c)ss$/,
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          }
+        ]
+      },
+      {
+        test: /\.(sa|sc)ss$/,
+        exclude: /node_modules/, // 只对自己的样式文件开启css module，防止编译冲突丢失ui样式
         use: [
           {
             loader: devMode ? 'style-loader' : MiniCssExtractplugin.loader,
