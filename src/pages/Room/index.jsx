@@ -1,16 +1,15 @@
-import React, { useContext } from 'react'
-import { Icon, Button } from 'antd-mobile'
+import React, { useContext, useState, useEffect } from 'react'
+import { Icon, Button, InputItem, Toast } from 'antd-mobile'
 import classnames from 'classnames'
 import { Context } from '../../context'
 import styles from './style.scss'
 
 import Header from '@common/Header'
-console.log(styles)
 
 const MAX_ROOM_MEMBERS_COUNT = 8
 
 const Player = props => {
-  const {uid, username, isMaster, isSelf} = props
+  const { uid, username, isMaster, isSelf } = props
   const cx = classnames(styles.player, {
     [styles.master]: isMaster,
     [styles.self]: isSelf,
@@ -27,9 +26,13 @@ const Player = props => {
 
 const Room = (props) => {
   const { state, dispatch } = useContext(Context)
-  const { roomData, currentRoomId, socket, username, uid } = state
+  const [inputWords, setInputWords] = useState('')
+  const [msgList, setMsgList] = useState([])
+  const { roomData, socket, username, uid } = state
+  const currentRoomId = props.match.params.id
   const currentRoom = roomData.find(room => room.id === currentRoomId)
   console.log(currentRoom)
+  const isMaster = currentRoom.master.uid === uid
 
   const len = currentRoom.players.length
   const displayPlayers = len >= MAX_ROOM_MEMBERS_COUNT
@@ -39,28 +42,68 @@ const Room = (props) => {
 
   const allowStart = len >= 2
 
+  const displayMsgList = msgList.filter((item, index) => index <= 7)
+
   const startGame = () => {
     if (!allowStart) {
       return
     }
   }
 
-  const onBack = () => {
-    props.history.goBack()
+  const onLeft = () => {
+    // 离开房间
+    socket.emit('leftRoom', {
+      player: {
+        username,
+        uid
+      },
+      socketRoom: currentRoom.socketRoom,
+      roomId: currentRoomId
+    })
+    props.history.push('/')
   }
+
+  const sendWords = () => {
+    if (!inputWords.trim()) {
+      return Toast.info('不能为空哦～', 1)
+    }
+    socket.emit('chatMessage', {
+      player: {
+        username,
+        uid
+      },
+      msg: inputWords
+    })
+    setInputWords('')
+  }
+
+  useEffect(() => {
+    socket.on('chatMessage', data => {
+      console.log('收到消息了', data)
+      const { player, msg } = data
+      let message = `${player.username}:  ${msg}`
+      let isMe = player.uid === uid
+      let msgItem = {
+        message,
+        isMe
+      }
+
+      setMsgList(list => [msgItem].concat(list))
+    })
+  }, [])
 
   return (
     <div className={styles.roomWrapper}>
       <Header
         title={currentRoom.name}
-        left={<Icon type="left" onClick={onBack} />}
-        right={`房间号: ${currentRoom.id}`}
+        left={<Icon type="left" onClick={onLeft} />}
+        right={`房间号: ${currentRoomId}`}
       />
 
       <div className={styles.playersList}>
         {
           displayPlayers.map((player, index) => (
-            <Player 
+            <Player
               key={player.uid || index}
               isMaster={player.uid === currentRoom.master.uid}
               isSelf={player.uid === uid}
@@ -70,16 +113,64 @@ const Room = (props) => {
         }
       </div>
 
-      <Button 
-        type="primary" 
-        disabled={!allowStart}
-        style={{
-          marginTop: 20
-        }}  
-        onClick={startGame}
-      >
-        {!allowStart ? '至少两人才能开始游戏' : '开始游戏'}
-      </Button>
+      {
+        isMaster &&
+        <Button
+          type="primary"
+          disabled={!allowStart}
+          style={{
+            marginTop: 20
+          }}
+          onClick={startGame}
+        >
+          {!allowStart ? '至少两人才能开始游戏' : '开始游戏'}
+        </Button>
+      }
+
+      <div className={styles.chatWrapper}>
+        <InputItem
+          clear
+          autoFocus
+          placeholder="您说点什么"
+          value={inputWords}
+          className={styles.chatInput}
+          onChange={val => {
+            setInputWords(val)
+          }}
+        />
+        <Button
+          type="primary"
+          inline={true}
+          style={{
+            borderRadius: 0,
+            height: 44,
+            lineHeight: '44px'
+          }}
+          onClick={sendWords}
+        >
+          发送
+        </Button>
+      </div>
+
+      <div className={styles.msgWrapper}>
+        {
+          msgList.length > 0 &&
+          <div className={styles.msgList}>
+            {
+              displayMsgList.map((item, index) => (
+                <div 
+                  className={classnames(styles.msgItem, {
+                    [styles.me]: item.isMe
+                  })} 
+                  key={index}
+                >
+                  {item.message}
+                </div>
+              ))
+            }
+          </div>
+        }
+      </div>
     </div>
   )
 }

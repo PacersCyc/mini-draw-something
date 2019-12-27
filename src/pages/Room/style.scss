@@ -79,4 +79,27 @@
       }
     }
   }
+
+  .chat-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+
+    .chat-input {
+      flex: 1;
+    }
+  }
+
+  .msg-wrapper {
+    .msg-list {
+      .msg-item {
+        padding: 8px 10px;
+        background: #fff;
+        font-size: 16px;
+        &.me {
+          background-color: #eee;
+        }
+      }
+    }
+  }
 }

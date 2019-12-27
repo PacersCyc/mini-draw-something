@@ -17,10 +17,12 @@ const Home = (props) => {
   const [changeVisible, setChangeVisible] = useState(false)
   const [changeName, setChangeName] = useState(username)
 
-  const publicRoomData = roomData.filter(room => room.status === 0)
+  const publicRoomData = roomData.filter(room => room.type === 0)
   console.log(roomData, publicRoomData)
 
   useEffect(() => {
+    socket.emit('updateHome')
+
     socket.on('homeInfo', data => {
       console.log(data)
       dispatch({
@@ -136,13 +138,13 @@ const Home = (props) => {
         publicRoomData.length > 0 && 
         <ul className={styles.roomList}>
           {
-            roomData.map(room => (
+            publicRoomData.map(room => (
               <li className={styles.roomItem} key={room.id}>
                 <div className={classnames(styles.roomInfo, {
                   [styles.disableEnter]: room.status === 1
                 })}>
                   <span className={styles.roomName}>{room.id}: </span>
-                  <span className={styles.roomMaster}>{room.master.username}</span>
+                  <span className={styles.roomMaster}>{room.name}</span>
                   <span className={styles.roomStatus}>
                     {
                       room.status === 0 ? '准备中' : '游戏中'
@@ -162,6 +164,14 @@ const Home = (props) => {
                       if (room.status === 1) {
                         return
                       }
+                      socket.emit('enterRoom', {
+                        player: {
+                          username,
+                          uid
+                        },
+                        socketRoom: room.socketRoom,
+                        roomId: room.id
+                      })
                       props.history.push(`/room/${room.id}`)
                     }}
                   >
