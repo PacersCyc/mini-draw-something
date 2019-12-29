@@ -9,7 +9,8 @@ const initialState = {
   socket: io('ws://localhost:9000'),
   roomData: [],
   currentRoomId: null,
-  onlineCount: 0
+  onlineCount: 0,
+  gameInfo: {}
 }
 
 const reducer = (state, action) => {
@@ -30,12 +31,18 @@ const reducer = (state, action) => {
     case 'update_user_name':
       localStorage.setItem('drawUser', JSON.stringify(payload))
       return {...state, ...payload}
-    case 'add_room':
+    case 'update_game_info':
       return {
         ...state,
-        currentRoomId: payload.id,
-        roomData: state.roomData.concat(payload)
+        gameInfo: payload
       }
+
+    // case 'add_room':
+    //   return {
+    //     ...state,
+    //     currentRoomId: payload.id,
+    //     roomData: state.roomData.concat(payload)
+    //   }
     default:
       return state
   }

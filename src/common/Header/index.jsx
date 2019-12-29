@@ -1,16 +1,18 @@
 import React from 'react'
+import classnames from 'classnames'
 import styles from './style.scss'
 
 const Header = (props) => {
   const {
     title,
     left,
-    right
+    right,
+    leftClass
   } = props
 
   return (
     <div className={styles.headerWrapper}>
-      <span className={styles.headerLeft}>
+      <span className={classnames(styles.headerLeft, leftClass)}>
         {left}
       </span>
       <span className={styles.title}>{title}</span>

@@ -48,6 +48,8 @@ const Room = (props) => {
     if (!allowStart) {
       return
     }
+
+    socket.emit('startGame', currentRoom)
   }
 
   const onLeft = () => {
@@ -89,6 +91,16 @@ const Room = (props) => {
       }
 
       setMsgList(list => [msgItem].concat(list))
+    })
+
+    socket.on('startGame', data => {
+      console.log('开始游戏', data)
+      
+      dispatch({
+        type: 'update_game_info',
+        payload: data
+      })
+      props.history.push(`/game/${currentRoomId}`)
     })
   }, [])
 

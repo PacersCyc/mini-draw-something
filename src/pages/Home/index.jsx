@@ -21,6 +21,13 @@ const Home = (props) => {
   console.log(roomData, publicRoomData)
 
   useEffect(() => {
+    if (uid) {
+      socket.emit('login', {
+        uid,
+        username
+      })
+    }
+
     socket.emit('updateHome')
 
     socket.on('homeInfo', data => {
@@ -45,7 +52,7 @@ const Home = (props) => {
         payload: data
       })
     })
-  }, [])
+  }, [uid])
 
   return (
     <div className={styles.home}>
@@ -161,6 +168,7 @@ const Home = (props) => {
                     size="small"
                     disabled={room.status === 1}
                     onClick={() => {
+                      console.log('enter')
                       if (room.status === 1) {
                         return
                       }

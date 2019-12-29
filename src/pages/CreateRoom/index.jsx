@@ -47,10 +47,10 @@ const CreateRoom = props => {
   useEffect(() => {
     socket.on('enterRoom', data => {
       console.log(data)
-      dispatch({
-        type: 'add_room',
-        payload: data
-      })
+      // dispatch({
+      //   type: 'add_room',
+      //   payload: data
+      // })
       Toast.hide()
       props.history.push(`/room/${data.id}`)
     })

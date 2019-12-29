@@ -6,6 +6,7 @@
   "author": "PacersCyc <452720855@qq.com>",
   "license": "MIT",
   "scripts": {
+    "start": "yarn run dev",
     "build": "webpack --config build/webpack.prod.config.js",
     "dev": "webpack-dev-server --hot --inline --progress --config build/webpack.dev.config.js"
   },
