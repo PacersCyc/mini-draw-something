@@ -5,6 +5,7 @@ const baseConfig = require('./webpack.base.config')
 
 module.exports = webpackMerge(baseConfig, {
   mode: 'development',
+  devtool: 'cheap-module-eval-source-map',
   plugins: [
     new HtmlWebpackPlugin({
       title: '你画我猜',

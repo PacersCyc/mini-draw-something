@@ -4,102 +4,97 @@
     flex: 1;
   }
 
-  .drawing-board {
-    width: 100%;
-    height: 260px;
-    position: relative;
+  .answer-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 2px;
 
-    canvas {
-      background: #fff;
-    }
-
-    .color-wrapper {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 15px;
-      padding-bottom: 0;
-      background: #fff;
-      box-shadow: 0 0 5vw #ccc;
-
-      &.color-hidden {
-        display: none;
-      }
-
-      .color-item {
-        width: 16.66667%;
-        display: flex;
-        margin-bottom: 10px;
-        span {
-          display: block;
-          border-radius: 50%;
-          width: 36px;
-          height: 36px
-        }
-      }
-    }
-
-    .line-wrapper {
-      box-sizing: border-box;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 10px 15px;
-      padding-bottom: 0;
-      background-color: #fff;
-      box-shadow: 0 0 5vw #ccc;
-
-
-      &.lines-hidden {
-        display: none;
-      }
-
-      .line-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 6px;
-        text-align: center;
-
-        .width {
-          width: 30px;
-        }
-
-        .line {
-          flex: 1;
-          margin-left: 4px;
-          border-radius: 50px;
-        }
-      }
+    .answer-input {
+      flex: 1;
     }
   }
 
-  .tool-wrapper {
-    display: flex;
-    align-items: center;
-    padding: 6px 0;
-    .tool-item {
-      flex: 1;
+  .players-wrapper {
+    box-sizing: border-box;
+    margin-top: 10px;
+    .players-list {
       display: flex;
       align-items: center;
-      justify-content: center;
-      text-align: center;
 
-      .tool-color {
-        margin: 0 auto;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #000;
-      }
+      .player-item {
+        box-sizing: border-box;
+        width: 25%;
+        padding: 8px;
 
-      .tool-line {
-        width: 24px;
-        height: 4px;
-        background: #000;
-        margin-right: 4px;
+        &.painter {
+          &.me {
+            .player-head {
+              &::after {
+                left: 20px;
+              }
+            }
+          }
+
+          .player-head {
+            background: #006dbf;
+
+            &::before {
+              content: '画';
+              position: absolute;
+              top: 0;
+              left: 0;
+              padding: .2em;
+              font-size: 10px;
+              color: #26a2ff;
+              background: #fff;
+            }
+          }
+        }
+
+        &.me {
+          .player-head {
+            &::after {
+              content: '我';
+              position: absolute;
+              top: 0;
+              left: 0;
+              padding: .2em;
+              font-size: 10px;
+              color: #26a2ff;
+              background: #fff;
+            }
+          }
+        }
+
+        .player-head {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 68px;
+          background: #26a2ff;
+          color: #fff;
+          font-size: 36px;
+
+          .score {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 10px;
+            padding: .2em;
+            color: #26a2ff;
+            background: #fff;
+          }
+        }
+
+        .player-name {
+          margin-top: 4px;
+          font-size: 14px;
+          color: #26a2ff;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
   }

@@ -9,6 +9,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = webpackMerge(baseConfig, {
   mode: 'production',
+  devtool: 'cheap-module-source-map',
   plugins: [
     new CleanWebpackPlugin(),
     new BundleAnalyzerPlugin(),

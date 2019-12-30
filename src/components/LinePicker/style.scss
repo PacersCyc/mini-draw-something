@@ -1,0 +1,32 @@
+.line-wrapper {
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 15px;
+  padding-bottom: 0;
+  background-color: #fff;
+  box-shadow: 0 0 5vw #ccc;
+
+
+  &.lines-hidden {
+    display: none;
+  }
+
+  .line-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    text-align: center;
+
+    .width {
+      width: 30px;
+    }
+
+    .line {
+      flex: 1;
+      margin-left: 4px;
+      border-radius: 50px;
+    }
+  }
+}

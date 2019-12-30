@@ -36,6 +36,16 @@ const reducer = (state, action) => {
         ...state,
         gameInfo: payload
       }
+    case 'update_game_time_data':
+      let newPlayInfo = {
+        ...state.gameInfo,
+        players: payload.players,
+        gameTime: payload.time
+      }
+      return {
+        ...state,
+        gameInfo: newPlayInfo
+      }
 
     // case 'add_room':
     //   return {

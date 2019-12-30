@@ -1,0 +1,28 @@
+.color-wrapper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 15px;
+  padding-bottom: 0;
+  background: #fff;
+  box-shadow: 0 0 5vw #ccc;
+
+  &.color-hidden {
+    display: none;
+  }
+
+  .color-item {
+    width: 16.66667%;
+    display: flex;
+    margin-bottom: 10px;
+    span {
+      display: block;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px
+    }
+  }
+}
