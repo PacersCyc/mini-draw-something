@@ -1,7 +1,7 @@
-import React, { lazy, Suspense } from 'react'
+import React, { lazy, Suspense, useContext } from 'react'
 import { hot } from 'react-hot-loader'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import { ContextProvider } from './context/index'
+import { ContextProvider, Context } from './context/index'
 require('./iconfont')
 
 import 'antd-mobile/dist/antd-mobile.css'
@@ -21,7 +21,6 @@ const Room = lazy(() => import('@pages/Room'))
 const Game = lazy(() => import('@pages/Game'))
 
 function App(props) {
-
   return (
     <ContextProvider>
       <Router>

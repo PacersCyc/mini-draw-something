@@ -3,9 +3,15 @@ import io from 'socket.io-client'
 
 const Context = createContext()
 
+let drawUser = JSON.parse(localStorage.getItem('drawUser'))
+let initialUsername = (drawUser && drawUser.username) || ''
+let initialUid = (drawUser && drawUser.uid) || ''
+
 const initialState = {
-  username: JSON.parse(localStorage.getItem('drawUser')|| "{}").username || '',
-  uid: JSON.parse(localStorage.getItem('drawUser')|| "{}").uid || '',
+  // username: JSON.parse(localStorage.getItem('drawUser')|| "{}").username || '',
+  // uid: JSON.parse(localStorage.getItem('drawUser')|| "{}").uid || '',
+  username: initialUsername,
+  uid: initialUid,
   socket: io('ws://localhost:9000'),
   roomData: [],
   currentRoomId: null,
@@ -39,12 +45,24 @@ const reducer = (state, action) => {
     case 'update_game_time_data':
       let newPlayInfo = {
         ...state.gameInfo,
-        players: payload.players,
+        // players: payload.players,
         gameTime: payload.time
       }
       return {
         ...state,
         gameInfo: newPlayInfo
+      }
+    case 'update_score':
+      let newPlayers = state.gameInfo.players.map(p => ({
+        ...p,
+        score: payload[p.uid] || 0
+      }))
+      return {
+        ...state,
+        gameInfo: {
+          ...state.gameInfo,
+          players: newPlayers
+        }
       }
 
     // case 'add_room':

@@ -159,9 +159,16 @@ const Draw = memo(props => {
   }, [])
 
   useEffect(() => {
-    if (!isPainter) {
-      drawImage(imageData.dataURL)
-    }
+    let ctx = canvasRef.current.getContext('2d')
+    if (imageData.type === 'next') {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+      setDrawHistory([])
+      saveDrawData()
+    } else {
+      if (!isPainter) {
+        drawImage(imageData.dataURL)
+      }
+    }   
   }, [imageData])
 
   useEffect(() => {

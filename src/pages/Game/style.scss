@@ -1,5 +1,7 @@
 
 .game-wrapper {
+  position: relative;
+
   .left-key {
     flex: 1;
   }
@@ -25,6 +27,12 @@
         box-sizing: border-box;
         width: 25%;
         padding: 8px;
+
+        &.offline {
+          .player-head {
+            background: #aaa;
+          }
+        }
 
         &.painter {
           &.me {
@@ -97,5 +105,46 @@
         }
       }
     }
+  }
+
+  .text-scroll-wrapper {
+    position: absolute;
+    top: 40px;
+    min-width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background-color: rgba(0, 0, 0, .2);
+    overflow: hidden;
+    transition: all .5s;
+    font-size: .9em;
+
+    .text-auto-scroll {
+      width: 10000%;
+      margin-left: 80%;
+      .text-list {
+        display: inline-block;
+        span + span {
+          padding-left: 30vw; 
+        }
+
+        .normal {
+          font-size: 0.9em;
+        }
+
+        .answer {
+          font-size: 1.2em;
+          color: #26a2ff;
+        }
+
+        .notify {
+          color: red;
+        }
+      }
+    }
+  }
+
+  .answer-text {
+    font-size: 1.2em;
+    color: #26a2ff;
   }
 }

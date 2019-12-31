@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Icon, Button, InputItem, Toast } from 'antd-mobile'
 import classnames from 'classnames'
+import { disconnectHandle } from '../../utils/disconnect'
 import { Context } from '../../context'
 import styles from './style.scss'
 
@@ -102,6 +103,8 @@ const Room = (props) => {
       })
       props.history.push(`/game/${currentRoomId}`)
     })
+
+    disconnectHandle(socket)
   }, [])
 
   return (

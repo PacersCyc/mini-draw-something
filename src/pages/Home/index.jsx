@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Modal, InputItem, Toast, Button, Icon } from 'antd-mobile'
 import classnames from 'classnames'
 import { Context } from '../../context'
+import { disconnectHandle } from '../../utils/disconnect'
 import styles from './style.scss'
 
 import Header from '@common/Header'
@@ -16,6 +17,8 @@ const Home = (props) => {
   const [inputName, setInputName] = useState('')
   const [changeVisible, setChangeVisible] = useState(false)
   const [changeName, setChangeName] = useState(username)
+  const [searchModalVisible, setSearchModalVisible] = useState(false)
+  const [searchInput, setSearchInput] = useState('')
 
   const publicRoomData = roomData.filter(room => room.type === 0)
   console.log(roomData, publicRoomData)
@@ -52,13 +55,33 @@ const Home = (props) => {
         payload: data
       })
     })
+
+    socket.on('searchRoom', msg => {
+      setSearchModalVisible(false)
+      Toast.info(msg, 1)
+    })
+
+    socket.on('enterRoom', data => {
+      console.log(data)
+
+      props.history.push(`/room/${data.id}`)
+    })
+
+    disconnectHandle(socket)
   }, [uid])
 
   return (
     <div className={styles.home}>
       <Header
         title="你画我猜-大厅"
-        left={<Icon type="search" />}
+        left={
+          <Icon 
+            type="search"
+            onClick={() => {
+              setSearchModalVisible(true)
+            }}
+          />
+        }
       />
       <Modal 
         visible={modalVisible}
@@ -86,6 +109,39 @@ const Home = (props) => {
           value={inputName}
           onChange={val => {
             setInputName(val)
+          }}
+        />
+      </Modal>
+
+      <Modal
+        title="寻找房间"
+        visible={searchModalVisible}
+        transparent
+        footer={[
+          {
+            text: 'ok',
+            onPress: () => {
+              if(!searchInput.trim()) {
+                Toast.info('不能为空哦', 1)
+                return
+              }
+              socket.emit('searchRoom', {
+                roomId: searchInput,
+                player: {
+                  username,
+                  uid
+                }
+              })
+              setSearchModalVisible(false)
+            }
+          }
+        ]}
+      >
+        <InputItem 
+          placeholder="输入房间号"
+          value={searchInput}
+          onChange={val => {
+            setSearchInput(val)
           }}
         />
       </Modal>

@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Icon, InputItem, List, Radio, Toast, Button } from 'antd-mobile'
+import { disconnectHandle } from '../../utils/disconnect'
 import { Context } from '../../context'
 import styles from './style.scss'
 
@@ -54,6 +55,8 @@ const CreateRoom = props => {
       Toast.hide()
       props.history.push(`/room/${data.id}`)
     })
+
+    disconnectHandle(socket)
   }, [])
 
   return (
