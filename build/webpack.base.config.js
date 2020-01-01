@@ -31,6 +31,9 @@ module.exports = {
           },
           {
             loader: 'css-loader'
+          },
+          {
+            loader: 'postcss-loader'
           }
         ]
       },
@@ -50,6 +53,9 @@ module.exports = {
               modules: true,
               localsConvention: 'camelCase'
             }
+          },
+          {
+            loader: 'postcss-loader'
           },
           'sass-loader'
         ]

@@ -105,6 +105,12 @@ const Draw = memo(props => {
     ctx.beginPath()
     ctx.strokeStyle = currentColor
     ctx.lineWidth = currentLineWidth
+
+    // ctx.fill()
+    // ctx.moveTo(x - currentLineWidth/16, y - currentLineWidth/16)
+    // ctx.lineTo(x, y)
+    // ctx.stroke()
+
     ctx.moveTo(x, y)
 
     let sendData = {

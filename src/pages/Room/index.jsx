@@ -63,7 +63,7 @@ const Room = (props) => {
       socketRoom: currentRoom.socketRoom,
       roomId: currentRoomId
     })
-    props.history.push('/')
+    // props.history.push('/')
   }
 
   const sendWords = () => {
@@ -92,6 +92,14 @@ const Room = (props) => {
       }
 
       setMsgList(list => [msgItem].concat(list))
+    })
+
+    socket.on('leftRoom', data => {
+      console.log('离开房间', data)
+      dispatch({
+        type: 'delete_roomId'
+      })
+      props.history.push('/')
     })
 
     socket.on('startGame', data => {

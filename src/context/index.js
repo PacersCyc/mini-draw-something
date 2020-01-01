@@ -37,6 +37,16 @@ const reducer = (state, action) => {
     case 'update_user_name':
       localStorage.setItem('drawUser', JSON.stringify(payload))
       return {...state, ...payload}
+    case 'update_room':
+      return {
+        ...state,
+        currentRoomId: payload.id
+      }
+    case 'delete_roomId':
+      return {
+        ...state,
+        currentRoomId: null
+      }
     case 'update_game_info':
       return {
         ...state,
@@ -64,13 +74,6 @@ const reducer = (state, action) => {
           players: newPlayers
         }
       }
-
-    // case 'add_room':
-    //   return {
-    //     ...state,
-    //     currentRoomId: payload.id,
-    //     roomData: state.roomData.concat(payload)
-    //   }
     default:
       return state
   }

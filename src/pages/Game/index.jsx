@@ -1,4 +1,5 @@
 import React, { useContext, useRef, useEffect, useState, useMemo, useCallback, memo } from 'react'
+import { Redirect } from 'react-router-dom'
 import { InputItem, Button, Modal, Toast } from 'antd-mobile'
 import classnames from 'classnames'
 import { Context } from '../../context'
@@ -173,13 +174,17 @@ const Game = props => {
         }, 20)
       }
     }
-  }, [scrollText])
 
+    return () => {
+      clearInterval(interval.current)
+      interval.current = null
+    }
+  }, [scrollText])
 
   return (
     <div className={styles.gameWrapper}>
       <Header
-        title="游戏中"
+        // title="游戏中"
         leftClass={styles.leftKey}
         left={
           <div>

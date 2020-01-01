@@ -15,7 +15,10 @@ const Header = (props) => {
       <span className={classnames(styles.headerLeft, leftClass)}>
         {left}
       </span>
-      <span className={styles.title}>{title}</span>
+      {
+        title &&
+        <span className={styles.title}>{title}</span>
+      }   
       <span className={styles.headerRight}>{right}</span>
     </div> 
   )

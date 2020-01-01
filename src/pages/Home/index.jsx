@@ -64,11 +64,15 @@ const Home = (props) => {
     socket.on('enterRoom', data => {
       console.log(data)
 
+      dispatch({
+        type: 'update_room',
+        payload: data
+      })
       props.history.push(`/room/${data.id}`)
     })
 
     disconnectHandle(socket)
-  }, [uid])
+  }, [])
 
   return (
     <div className={styles.home}>
