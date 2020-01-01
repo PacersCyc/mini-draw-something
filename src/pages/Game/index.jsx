@@ -86,7 +86,7 @@ const Game = props => {
     })
 
     socket.on('message', data => {
-      console.log(data)
+      // console.log(data)
       const { type, playerName } = data
       let newMessage
 
@@ -115,11 +115,11 @@ const Game = props => {
     })
 
     socket.on('timeover', data => {
-      console.log(data)
+      // console.log(data)
     })
 
     socket.on('thisOver', data => {
-      console.log(data)
+      // console.log(data)
 
       setAnswer(data.answer)
       setAnswerModalVisible(true)
@@ -130,7 +130,7 @@ const Game = props => {
     })
 
     socket.on('nextPlay', data => {
-      console.log('下一轮', data)
+      // console.log('下一轮', data)
 
       setImageData({
         type: 'next',
@@ -144,7 +144,7 @@ const Game = props => {
     })
 
     socket.on('gameover', data => {
-      console.log(data)
+      // console.log(data)
 
       setAnswerModalVisible(false)
       setScoreModalVisible(true)
@@ -154,7 +154,7 @@ const Game = props => {
   }, [])
 
   useEffect(() => {
-    console.log(interval.current)
+    // console.log(interval.current)
     let msgScrollDom = msgScroll.current
     if (interval.current) {
       if (!scrollText.length) {
@@ -165,7 +165,7 @@ const Game = props => {
         interval.current = setInterval(() => {
           msgScrollDom.scrollLeft++
           if (msgScrollDom.scrollLeft >= msgScrollDom.clientWidth + msgList.current.clientWidth) {
-            console.log(interval.current)
+            // console.log(interval.current)
             clearInterval(interval.current)
             interval.current = null // clearInterval没作用要显式置空不知道为什么
             msgScrollDom.scrollLeft = 0

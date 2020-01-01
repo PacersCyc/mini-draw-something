@@ -32,14 +32,14 @@ const Room = (props) => {
   const { roomData, socket, username, uid } = state
   const currentRoomId = props.match.params.id
   const currentRoom = roomData.find(room => room.id === currentRoomId)
-  console.log(currentRoom)
+  // console.log(currentRoom)
   const isMaster = currentRoom.master.uid === uid
 
   const len = currentRoom.players.length
   const displayPlayers = len >= MAX_ROOM_MEMBERS_COUNT
     ? currentRoom.players
     : currentRoom.players.concat(new Array(MAX_ROOM_MEMBERS_COUNT - len).fill({}))
-  console.log(displayPlayers)
+  // console.log(displayPlayers)
 
   const allowStart = len >= 2
 
@@ -82,7 +82,7 @@ const Room = (props) => {
 
   useEffect(() => {
     socket.on('chatMessage', data => {
-      console.log('收到消息了', data)
+      // console.log('收到消息了', data)
       const { player, msg } = data
       let message = `${player.username}:  ${msg}`
       let isMe = player.uid === uid
@@ -95,7 +95,7 @@ const Room = (props) => {
     })
 
     socket.on('leftRoom', data => {
-      console.log('离开房间', data)
+      // console.log('离开房间', data)
       dispatch({
         type: 'delete_roomId'
       })
@@ -103,7 +103,7 @@ const Room = (props) => {
     })
 
     socket.on('startGame', data => {
-      console.log('开始游戏', data)
+      // console.log('开始游戏', data)
       
       dispatch({
         type: 'update_game_info',

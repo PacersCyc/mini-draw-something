@@ -4,6 +4,8 @@
       "@babel/preset-env",
       {
         "modules": false,
+        // "useBuiltIns": "usage",
+        // "corejs": 2,
         "targets": {
           "browsers": [
             "> 1%",

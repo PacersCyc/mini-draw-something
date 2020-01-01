@@ -47,7 +47,7 @@ const CreateRoom = props => {
 
   useEffect(() => {
     socket.on('enterRoom', data => {
-      console.log(data)
+      // console.log(data)
       // dispatch({
       //   type: 'add_room',
       //   payload: data
@@ -86,7 +86,7 @@ const CreateRoom = props => {
                 key={item.value}
                 checked={item.value === roomType}
                 onChange={e => {
-                  console.log(e)
+                  // console.log(e)
                   setRoomType(item.value)
                 }}
               >

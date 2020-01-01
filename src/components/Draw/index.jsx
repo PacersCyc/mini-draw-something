@@ -22,11 +22,11 @@ const Draw = memo(props => {
   }
 
   const drawImage = (data) => {
-    console.log(canvasWidth, canvasHeight)
+    // console.log(canvasWidth, canvasHeight)
     let canvasDom = canvasRef.current
     let width = canvasDom.getAttribute('width')
     let height = canvasDom.getAttribute('height')
-    console.log(width, height)
+    // console.log(width, height)
     let ctx = canvasRef.current.getContext('2d')
     let img = new Image()
     img.onload = () => {
@@ -72,7 +72,7 @@ const Draw = memo(props => {
   }
 
   const clearCanvas = () => {
-    console.log('clear')
+    // console.log('clear')
     let canvasDom = canvasRef.current
     let ctx = canvasDom.getContext('2d')
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
@@ -198,7 +198,7 @@ const Draw = memo(props => {
 
   useEffect(() => {
     // console.log(canvasWidth, canvasHeight)
-    console.log(historyIndex, drawHistory)
+    // console.log(historyIndex, drawHistory)
     let ctx = canvasRef.current.getContext('2d')
     let data = drawHistory[historyIndex]
     let img = new Image()

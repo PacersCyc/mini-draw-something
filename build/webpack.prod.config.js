@@ -6,6 +6,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = webpackMerge(baseConfig, {
   mode: 'production',
@@ -63,20 +64,32 @@ module.exports = webpackMerge(baseConfig, {
       },
     },
     minimizer: [
-      new UglifyJsPlugin({
-        parallel: true,  //使用多进程并行运行来提高构建速度
+      // new UglifyJsPlugin({
+      //   cache: true,
+      //   parallel: true,
+      //   sourceMap: true,
+
+      //   parallel: true,  //使用多进程并行运行来提高构建速度
+      //   sourceMap: false,
+      //   uglifyOptions: {
+      //     warnings: false,
+      //     compress: {
+      //       unused: true,
+      //       drop_debugger: true,
+      //       drop_console: true,
+      //     },
+      //     output: {
+      //       comments: false // 去掉注释
+      //     }
+      //   }
+      // }),
+
+      
+      // uglifyjs-webpack-plugin 使用的 uglify-es 已经不再维护，取而代之的是一个名为 terser 的分支。所以 webpack 官方放弃了使用 uglifyjs-webpack-plugin
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
         sourceMap: false,
-        uglifyOptions: {
-          warnings: false,
-          compress: {
-            unused: true,
-            drop_debugger: true,
-            drop_console: true,
-          },
-          output: {
-            comments: false // 去掉注释
-          }
-        }
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {

@@ -19,9 +19,20 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js(x?)$/,
-        loader: 'babel-loader',
+        test: /\.js(x?)$/,      
         exclude: /node_modules/,
+        // 这里因为uglifyJS的坑搞了半天，socket.io-client里的依赖用了const语法没编译压缩不了，建议直接换terser-webpack-plugin省事
+        // https://github.com/webpack/webpack/issues/2031
+        // exclude: /node_modules\/(?!(node_modules\/socket.io-client\/node_modules\/debug\/src)\/).*/,
+        // include: [
+        //   path.resolve(__dirname, 'src'),
+        //   path.resolve(__dirname, 'node_modules/socket.io-client/node_modules/debug/src')
+        // ],
+        use: [
+          {
+            loader: 'babel-loader'
+          }
+        ]
       },
       {
         test: /\.css$/,
@@ -81,6 +92,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
+      'react-dom': '@hot-loader/react-dom',
       "@pages": path.resolve(__dirname, '../src/pages'),
       "@common": path.resolve(__dirname, '../src/common')
     }

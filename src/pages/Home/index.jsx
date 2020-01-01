@@ -7,8 +7,6 @@ import styles from './style.scss'
 
 import Header from '@common/Header'
 
-const prompt = Modal.prompt
-
 const Home = (props) => {
 
   const { state, dispatch } = useContext(Context)
@@ -21,7 +19,8 @@ const Home = (props) => {
   const [searchInput, setSearchInput] = useState('')
 
   const publicRoomData = roomData.filter(room => room.type === 0)
-  console.log(roomData, publicRoomData)
+  // console.log('home render')
+  // console.log(roomData, publicRoomData)
 
   useEffect(() => {
     if (uid) {
@@ -34,7 +33,7 @@ const Home = (props) => {
     socket.emit('updateHome')
 
     socket.on('homeInfo', data => {
-      console.log(data)
+      // console.log(data)
       dispatch({
         type: 'update_info',
         payload: data
@@ -42,14 +41,14 @@ const Home = (props) => {
     })
 
     socket.on('login', data => {
-      console.log(data)
+      // console.log(data)
       dispatch({
         type: 'login',
         payload: data
       })
     })
     socket.on('nameUpdated', data => {
-      console.log(data)
+      // console.log(data)
       dispatch({
         type: 'update_user_name',
         payload: data
@@ -62,7 +61,7 @@ const Home = (props) => {
     })
 
     socket.on('enterRoom', data => {
-      console.log(data)
+      // console.log(data)
 
       dispatch({
         type: 'update_room',
@@ -91,11 +90,15 @@ const Home = (props) => {
         visible={modalVisible}
         title="欢迎进入你画我猜"
         transparent={true}
+        maskClosable={true}
+        onClose={() => {
+          setModalVisible(false)
+        }}
         footer={[
           {
             text: 'ok',
             onPress: () => {
-              console.log(inputName)
+              // console.log(inputName)
               if (!inputName.trim()){
                 Toast.info('不能为空哦', 1)
                 return
@@ -121,6 +124,10 @@ const Home = (props) => {
         title="寻找房间"
         visible={searchModalVisible}
         transparent
+        maskClosable={true}
+        onClose={() => {
+          setSearchModalVisible(false)
+        }}
         footer={[
           {
             text: 'ok',
@@ -154,6 +161,10 @@ const Home = (props) => {
         visible={changeVisible}
         title="修改昵称"
         transparent={true}
+        maskClosable={true}
+        onClose={() => {
+          setChangeVisible(false)
+        }}
         footer={[
           {
             text: 'ok',

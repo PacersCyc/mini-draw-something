@@ -49,8 +49,8 @@ function RenderRoute(props) {
   const { state, dispatch } = useContext(Context)
   const { roomData, currentRoomId, gameInfo } = state
   const { path, component, exact, computedMatch, ...rest } = props
-  console.log('state', state)
-  console.log('props', props)
+  // console.log('state', state)
+  // console.log('props', props)
 
   const normalRender = () => (
     <Route 
@@ -70,7 +70,7 @@ function RenderRoute(props) {
       }
     case '/game/:id':
       if (!gameInfo.key || !gameInfo.painter || !roomData.find(room => room.id === computedMatch.params.id)) {
-        console.log('开始游戏失败')
+        // console.log('进入游戏失败')
         return <Redirect to="/" />
       } else {
         return normalRender()
