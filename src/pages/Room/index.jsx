@@ -153,7 +153,7 @@ const Room = (props) => {
       <div className={styles.chatWrapper}>
         <InputItem
           clear
-          autoFocus
+          // autoFocus
           placeholder="您说点什么"
           value={inputWords}
           className={styles.chatInput}

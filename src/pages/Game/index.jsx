@@ -95,7 +95,7 @@ const Game = props => {
           newMessage = `${playerName}答对了 +${data.score}分`
           break;
         case 'normal':
-          newMessage = `${playerName}说: ${data.message}`
+          newMessage = `${playerName} 说: ${data.message}`
           break;
         case 'notify':
           newMessage = `${playerName}${data.message}`
@@ -208,7 +208,7 @@ const Game = props => {
         <div className={styles.answerWrapper}>
           <InputItem
             clear
-            autoFocus
+            // autoFocus
             className={styles.answerInput}
             placeholder="输入答案哟～"
             value={answerWord}
