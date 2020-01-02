@@ -1,6 +1,8 @@
 import React, { createContext, useReducer } from 'react'
 import io from 'socket.io-client'
 
+let socketURL = process.env.NODE_ENV === 'production' ? 'ws://47.111.244.176:9000' : 'ws://localhost:9000'
+
 const Context = createContext()
 
 let drawUser = JSON.parse(localStorage.getItem('drawUser'))
@@ -12,7 +14,7 @@ const initialState = {
   // uid: JSON.parse(localStorage.getItem('drawUser')|| "{}").uid || '',
   username: initialUsername,
   uid: initialUid,
-  socket: io('ws://localhost:9000'),
+  socket: io(socketURL),
   roomData: [],
   currentRoomId: null,
   onlineCount: 0,
