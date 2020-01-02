@@ -46,6 +46,13 @@ const CreateRoom = props => {
   }
 
   useEffect(() => {
+    if (uid) {
+      socket.emit('login', {
+        uid,
+        username
+      })
+    }
+
     socket.on('enterRoom', data => {
       // console.log(data)
       // dispatch({
