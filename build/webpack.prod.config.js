@@ -13,7 +13,7 @@ module.exports = webpackMerge(baseConfig, {
   devtool: 'cheap-module-source-map',
   plugins: [
     new CleanWebpackPlugin(),
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
     new HtmlWebpackPlugin({
       title: '你画我猜',
       template: 'index.html',
@@ -84,7 +84,7 @@ module.exports = webpackMerge(baseConfig, {
       //   }
       // }),
 
-      
+
       // uglifyjs-webpack-plugin 使用的 uglify-es 已经不再维护，取而代之的是一个名为 terser 的分支。所以 webpack 官方放弃了使用 uglifyjs-webpack-plugin
       new TerserPlugin({
         cache: true,

@@ -263,8 +263,8 @@ const Game = props => {
         <div className={styles.textAutoScroll}>
           <div className={styles.textList} ref={msgList}>
             {
-              scrollText.map(t => (
-                <span key={t.msg} className={styles[t.type]}>{t.msg}</span>
+              scrollText.map((t, i) => (
+                <span key={i} className={styles[t.type]}>{t.msg}</span>
               ))
             }
           </div>
