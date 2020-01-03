@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { memo } from 'react'
 import classnames from 'classnames'
 import styles from './style.scss'
 
-const Header = (props) => {
+const Header = memo((props) => {
   const {
     title,
     left,
@@ -22,6 +22,6 @@ const Header = (props) => {
       <span className={styles.headerRight}>{right}</span>
     </div> 
   )
-}
+})
 
 export default Header

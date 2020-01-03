@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { memo, useContext, useState, useEffect, useCallback } from 'react'
 import { Icon, InputItem, List, Radio, Toast, Button } from 'antd-mobile'
 import { disconnectHandle } from '../../utils/disconnect'
 import { Context } from '../../context'
@@ -19,15 +19,16 @@ const roomTypes = [
   }
 ]
 
-const CreateRoom = props => {
+const CreateRoom = memo(props => {
+  const { history } = props
   const { state, dispatch } = useContext(Context)
   const { socket, username, uid } = state
   const [roomName, setRoomName] = useState(`${username}的房间`)
   const [roomType, setRoomType] = useState(0)
 
-  const onBack = () => {
-    props.history.goBack()
-  }
+  const onBack = useCallback(() => {
+    history.goBack()
+  }, [history])
 
   const createRoom = () => {
     if (!roomName.trim()) {
@@ -114,6 +115,6 @@ const CreateRoom = props => {
       </Button>
     </div>
   )
-}
+})
 
 export default CreateRoom

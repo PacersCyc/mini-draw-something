@@ -5,7 +5,7 @@ import { ContextProvider, Context } from './context/index'
 import NotFound from '@pages/NotFound'
 require('./iconfont')
 
-import 'antd-mobile/dist/antd-mobile.css'
+// import 'antd-mobile/dist/antd-mobile.css'
 import styles from './App.scss'
 import './assets/styles/icon.css'
 

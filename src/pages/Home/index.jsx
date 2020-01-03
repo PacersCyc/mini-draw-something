@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { memo, useState, useEffect, useContext, useMemo, useCallback } from 'react'
 import { Modal, InputItem, Toast, Button, Icon } from 'antd-mobile'
 import classnames from 'classnames'
 import { Context } from '../../context'
@@ -7,8 +7,49 @@ import styles from './style.scss'
 
 import Header from '@common/Header'
 
-const Home = (props) => {
+const RoomList = memo(props => {
+  // console.log('roomlist render')
+  const { list, onEnter } = props
 
+  return (
+    <ul className={styles.roomList}>
+      {
+        list.map(room => (
+          <li className={styles.roomItem} key={room.id}>
+            <div className={classnames(styles.roomInfo, {
+              [styles.disableEnter]: room.status === 1
+            })}>
+              <span className={styles.roomName}>{room.id}: </span>
+              <span className={styles.roomMaster}>{room.name}</span>
+              <span className={styles.roomStatus}>
+                {
+                  room.status === 0 ? '准备中' : '游戏中'
+                }
+              </span>
+            </div>
+            <div className={styles.roomPlayer}>
+              <span className={styles.playerCount}>
+                玩家人数: {room.playersCount} / 8
+                  </span>
+              <Button
+                type="primary"
+                inline={true}
+                size="small"
+                disabled={room.status === 1}
+                onClick={() => onEnter(room)}
+              >
+                加入房间
+                  </Button>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  )
+})
+
+const Home = (props) => {
+  const { history } = props
   const { state, dispatch } = useContext(Context)
   const { uid, username, socket, roomData, onlineCount } = state
   const [modalVisible, setModalVisible] = useState(!uid)
@@ -18,9 +59,23 @@ const Home = (props) => {
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [searchInput, setSearchInput] = useState('')
 
-  const publicRoomData = roomData.filter(room => room.type === 0)
+  const publicRoomData = useMemo(() => roomData.filter(room => room.type === 0), [roomData])
+  const onEnter = useCallback(room => {
+    console.log('enter')
+    if (room.status === 1) {
+      return
+    }
+    socket.emit('enterRoom', {
+      player: {
+        username,
+        uid
+      },
+      socketRoom: room.socketRoom,
+      roomId: room.id
+    })
+    props.history.push(`/room/${room.id}`)
+  }, [socket, uid, username, history])
   // console.log('home render')
-  // console.log(roomData, publicRoomData)
 
   useEffect(() => {
     if (uid) {
@@ -78,7 +133,7 @@ const Home = (props) => {
       <Header
         title="你画我猜-大厅"
         left={
-          <Icon 
+          <Icon
             type="search"
             onClick={() => {
               setSearchModalVisible(true)
@@ -86,7 +141,7 @@ const Home = (props) => {
           />
         }
       />
-      <Modal 
+      <Modal
         visible={modalVisible}
         title="欢迎进入你画我猜"
         transparent={true}
@@ -99,7 +154,7 @@ const Home = (props) => {
             text: 'ok',
             onPress: () => {
               // console.log(inputName)
-              if (!inputName.trim()){
+              if (!inputName.trim()) {
                 Toast.info('不能为空哦', 1)
                 return
               }
@@ -111,7 +166,7 @@ const Home = (props) => {
           }
         ]}
       >
-        <InputItem 
+        <InputItem
           placeholder="请输入游戏昵称"
           value={inputName}
           onChange={val => {
@@ -132,7 +187,7 @@ const Home = (props) => {
           {
             text: 'ok',
             onPress: () => {
-              if(!searchInput.trim()) {
+              if (!searchInput.trim()) {
                 Toast.info('不能为空哦', 1)
                 return
               }
@@ -148,7 +203,7 @@ const Home = (props) => {
           }
         ]}
       >
-        <InputItem 
+        <InputItem
           placeholder="输入房间号"
           value={searchInput}
           onChange={val => {
@@ -182,7 +237,7 @@ const Home = (props) => {
           }
         ]}
       >
-        <InputItem 
+        <InputItem
           placeholder="请输入修改昵称"
           value={changeName}
           onChange={val => {
@@ -194,8 +249,8 @@ const Home = (props) => {
         username &&
         <div className={styles.userWrapper}>
           <span className={styles.userName}>{username}</span>
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             inline={true}
             size="small"
             onClick={() => {
@@ -213,57 +268,14 @@ const Home = (props) => {
       }
 
       {
-        publicRoomData.length > 0 && 
-        <ul className={styles.roomList}>
-          {
-            publicRoomData.map(room => (
-              <li className={styles.roomItem} key={room.id}>
-                <div className={classnames(styles.roomInfo, {
-                  [styles.disableEnter]: room.status === 1
-                })}>
-                  <span className={styles.roomName}>{room.id}: </span>
-                  <span className={styles.roomMaster}>{room.name}</span>
-                  <span className={styles.roomStatus}>
-                    {
-                      room.status === 0 ? '准备中' : '游戏中'
-                    }
-                  </span>
-                </div>
-                <div className={styles.roomPlayer}>
-                  <span className={styles.playerCount}>
-                    玩家人数: {room.playersCount} / 8
-                  </span>
-                  <Button 
-                    type="primary"
-                    inline={true}
-                    size="small"
-                    disabled={room.status === 1}
-                    onClick={() => {
-                      console.log('enter')
-                      if (room.status === 1) {
-                        return
-                      }
-                      socket.emit('enterRoom', {
-                        player: {
-                          username,
-                          uid
-                        },
-                        socketRoom: room.socketRoom,
-                        roomId: room.id
-                      })
-                      props.history.push(`/room/${room.id}`)
-                    }}
-                  >
-                    加入房间
-                  </Button>
-                </div>
-              </li>
-            ))
-          }
-        </ul>
+        publicRoomData.length > 0 &&
+        <RoomList 
+          list={publicRoomData}
+          onEnter={onEnter}
+        />
       }
 
-      <Button 
+      <Button
         type="primary"
         style={{
           marginTop: 40,

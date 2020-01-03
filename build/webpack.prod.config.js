@@ -29,11 +29,14 @@ module.exports = webpackMerge(baseConfig, {
     })
   ],
   optimization: {
+    runtimeChunk: {
+      name: 'manifest'
+    },
     splitChunks: {
       // async表示只从异步加载得模块（动态加载import()）里面进行拆分
       // initial表示只从入口模块进行拆分
       // all表示以上两者都包括
-      chunks: "async",
+      chunks: "all",
       minSize: 30000,   // 大于30k会被webpack进行拆包
       minChunks: 1,     // 被引用次数大于等于这个次数进行拆分
       // import()文件本身算一个
@@ -89,7 +92,7 @@ module.exports = webpackMerge(baseConfig, {
       new TerserPlugin({
         cache: true,
         parallel: true,
-        sourceMap: false,
+        sourceMap: true,
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorOptions: {
@@ -99,5 +102,9 @@ module.exports = webpackMerge(baseConfig, {
         }
       })
     ]
+  },
+  externals: {
+    'react': 'window.React',
+    'react-dom': 'window.ReactDOM'
   }
 })

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { memo, useContext, useState, useEffect } from 'react'
 import { Icon, Button, InputItem, Toast } from 'antd-mobile'
 import classnames from 'classnames'
 import { disconnectHandle } from '../../utils/disconnect'
@@ -9,7 +9,7 @@ import Header from '@common/Header'
 
 const MAX_ROOM_MEMBERS_COUNT = 8
 
-const Player = props => {
+const Player = memo(props => {
   const { uid, username, isMaster, isSelf } = props
   const cx = classnames(styles.player, {
     [styles.master]: isMaster,
@@ -23,7 +23,7 @@ const Player = props => {
       <div className={styles.playerName}>{username || '等待加入'}</div>
     </div>
   )
-}
+})
 
 const Room = (props) => {
   const { state, dispatch } = useContext(Context)
