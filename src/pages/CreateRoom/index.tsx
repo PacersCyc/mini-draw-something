@@ -2,9 +2,10 @@ import React, { memo, useContext, useState, useEffect, useCallback } from 'react
 import { Icon, InputItem, List, Radio, Toast, Button } from 'antd-mobile'
 import { disconnectHandle } from '../../utils/disconnect'
 import { Context } from '../../context'
-import styles from './style.scss'
+// import styles from './style.scss'
 
 import Header from '@common/Header'
+import { RouteComponentProps } from 'react-router-dom';
 
 const RadioItem = Radio.RadioItem
 
@@ -19,7 +20,7 @@ const roomTypes = [
   }
 ]
 
-const CreateRoom = memo(props => {
+const CreateRoom = memo((props: RouteComponentProps) => {
   const { history } = props
   const { state, dispatch } = useContext(Context)
   const { socket, username, uid } = state
@@ -54,7 +55,7 @@ const CreateRoom = memo(props => {
       })
     }
 
-    socket.on('enterRoom', data => {
+    socket.on('enterRoom', (data:{id: string}) => {
       // console.log(data)
       // dispatch({
       //   type: 'add_room',
@@ -93,7 +94,7 @@ const CreateRoom = memo(props => {
               <RadioItem
                 key={item.value}
                 checked={item.value === roomType}
-                onChange={e => {
+                onChange={() => {
                   // console.log(e)
                   setRoomType(item.value)
                 }}

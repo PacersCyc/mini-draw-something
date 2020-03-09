@@ -1,15 +1,25 @@
-import React, { memo, useRef, useState, useEffect } from 'react'
+import React, { memo, useRef, useState, useEffect, BaseSyntheticEvent } from 'react'
 import ColorPicker from '../ColorPicker'
 import LinePicker from '../LinePicker'
 import { COLORS, LINES } from './constant'
 import styles from './style.scss'
+import { DrawActionData, DrawImageData } from '../../types/game.d';
 
-const Draw = memo(props => {
+interface DrawProps {
+  isPainter: boolean,
+  actionData: DrawActionData,
+  imageData: DrawImageData,
+  sendActionData: (data: DrawActionData) => void,
+  sendImageData: (data: DrawImageData) => void
+}
+
+const Draw = memo((props: DrawProps) => {
+  console.log(props)
   const { isPainter, actionData, imageData, sendActionData, sendImageData } = props
-  const canvasRef = useRef(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const [canvasWidth, setCanvasWidth] = useState(0)
   const [canvasHeight, setCanvasHeight] = useState(0)
-  const [drawHistory, setDrawHistory] = useState([])
+  const [drawHistory, setDrawHistory] = useState<Array<string>>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [colorPickerVisible, setColorPickerVisible] = useState(false)
   const [currentColor, setCurrentColor] = useState('#000')
@@ -17,48 +27,48 @@ const Draw = memo(props => {
   const [currentLineWidth, setCurrentLineWidth] = useState(4)
 
   const saveDrawData = () => {
-    let dataURL = canvasRef.current.toDataURL()
+    let dataURL = canvasRef.current!.toDataURL()
     setDrawHistory(h => h.filter((item, index) => index <= historyIndex).concat(dataURL))
   }
 
-  const drawImage = (data) => {
+  const drawImage = (data:string) => {
     // console.log(canvasWidth, canvasHeight)
     let canvasDom = canvasRef.current
-    let width = canvasDom.getAttribute('width')
-    let height = canvasDom.getAttribute('height')
+    let width = Number(canvasDom!.getAttribute('width'))
+    let height = Number(canvasDom!.getAttribute('height'))
     // console.log(width, height)
-    let ctx = canvasRef.current.getContext('2d')
+    let ctx = canvasRef.current!.getContext('2d')
     let img = new Image()
     img.onload = () => {
-      ctx.clearRect(0, 0, width, height)
-      ctx.drawImage(img, 0, 0)
+      ctx!.clearRect(0, 0, width, height)
+      ctx!.drawImage(img, 0, 0)
     }
     img.src = data
   }
 
-  const drawAction = data => {
+  const drawAction = (data: DrawActionData) => {
     const { type, data: pos, setting } = data
-    const { x, y } = pos
+    const { x, y } = pos!
 
-    let ctx = canvasRef.current.getContext('2d')
-    ctx.strokeStyle = setting.color
-    ctx.lineWidth = setting.lineWidth
+    let ctx = canvasRef.current!.getContext('2d')
+    ctx!.strokeStyle = setting!.color
+    ctx!.lineWidth = setting!.lineWidth
     switch (type) {
       case 'start':
-        ctx.beginPath()
-        ctx.moveTo(x, y)
+        ctx!.beginPath()
+        ctx!.moveTo(x, y)
       case 'move':
-        ctx.lineTo(x, y)
-        ctx.stroke()
+        ctx!.lineTo(x, y)
+        ctx!.stroke()
     }
   }
 
-  const setDrawColor = color => {
+  const setDrawColor = (color: string) => {
     setCurrentColor(color)
     setColorPickerVisible(false)
   }
 
-  const changeLineWidth = lineWidth => {
+  const changeLineWidth = (lineWidth: number) => {
     setCurrentLineWidth(lineWidth)
     setLinePickerVisible(false)
   }
@@ -74,22 +84,22 @@ const Draw = memo(props => {
   const clearCanvas = () => {
     // console.log('clear')
     let canvasDom = canvasRef.current
-    let ctx = canvasDom.getContext('2d')
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+    let ctx = canvasDom!.getContext('2d')
+    ctx!.clearRect(0, 0, canvasWidth, canvasHeight)
 
     saveDrawData()
   }
 
-  const getPos = e => {
+  const getPos = (e: BaseSyntheticEvent<TouchEvent>) => {
     let canvasDom = canvasRef.current
-    let parentDom = canvasDom
+    let parentDom: HTMLElement | null = canvasDom
     let touch = e.nativeEvent.touches[0]
     let offsetTop = 0
     let offsetLeft = 0
     while (parentDom) {
       offsetTop += parentDom.offsetTop
       offsetLeft += parentDom.offsetLeft
-      parentDom = parentDom.offsetParent
+      parentDom = parentDom.offsetParent as HTMLElement
     }
     let x = touch.clientX - offsetLeft
     let y = touch.clientY - offsetTop
@@ -99,19 +109,19 @@ const Draw = memo(props => {
     }
   }
 
-  const onTouchStart = e =>{
+  const onTouchStart = (e: BaseSyntheticEvent<TouchEvent>) =>{
     const { x, y } = getPos(e)
-    let ctx = canvasRef.current.getContext('2d')
-    ctx.beginPath()
-    ctx.strokeStyle = currentColor
-    ctx.lineWidth = currentLineWidth
+    let ctx = canvasRef.current!.getContext('2d')
+    ctx!.beginPath()
+    ctx!.strokeStyle = currentColor
+    ctx!.lineWidth = currentLineWidth
 
     // ctx.fill()
     // ctx.moveTo(x - currentLineWidth/16, y - currentLineWidth/16)
     // ctx.lineTo(x, y)
     // ctx.stroke()
 
-    ctx.moveTo(x, y)
+    ctx!.moveTo(x, y)
 
     let sendData = {
       type: 'start',
@@ -124,13 +134,13 @@ const Draw = memo(props => {
     sendActionData(sendData)
   }
 
-  const onTouchMove = e => {
+  const onTouchMove = (e: BaseSyntheticEvent<TouchEvent>) => {
     const { x, y } = getPos(e)
-    let ctx = canvasRef.current.getContext('2d')
-    ctx.strokeStyle = currentColor
-    ctx.lineWidth = currentLineWidth
-    ctx.lineTo(x, y)
-    ctx.stroke()
+    let ctx = canvasRef.current!.getContext('2d')
+    ctx!.strokeStyle = currentColor
+    ctx!.lineWidth = currentLineWidth
+    ctx!.lineTo(x, y)
+    ctx!.stroke()
 
     let sendData = {
       type: 'move',
@@ -143,9 +153,9 @@ const Draw = memo(props => {
     sendActionData(sendData)
   }
 
-  const onTouchEnd = e => {
-    let ctx = canvasRef.current.getContext('2d')
-    ctx.closePath()
+  const onTouchEnd = (e: BaseSyntheticEvent<TouchEvent>) => {
+    let ctx = canvasRef.current!.getContext('2d')
+    ctx!.closePath()
 
     saveDrawData()
   }
@@ -154,9 +164,9 @@ const Draw = memo(props => {
 
   useEffect(() => {
     let canvasDom = canvasRef.current
-    let drawWrapperDom = canvasDom.parentElement
-    setCanvasWidth(drawWrapperDom.clientWidth)
-    setCanvasHeight(drawWrapperDom.clientHeight)
+    let drawWrapperDom = canvasDom!.parentElement
+    setCanvasWidth(drawWrapperDom!.clientWidth)
+    setCanvasHeight(drawWrapperDom!.clientHeight)
     // canvasDom.setAttribute('width', canvasWidth)
     // canvasDom.setAttribute('height', canvasHeight)
     // console.log(canvasWidth, canvasHeight)
@@ -165,14 +175,14 @@ const Draw = memo(props => {
   }, [])
 
   useEffect(() => {
-    let ctx = canvasRef.current.getContext('2d')
+    let ctx = canvasRef.current!.getContext('2d')
     if (imageData.type === 'next') {
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight)
+      ctx!.clearRect(0, 0, canvasWidth, canvasHeight)
       setDrawHistory([])
       saveDrawData()
     } else {
       if (!isPainter) {
-        drawImage(imageData.dataURL)
+        drawImage(imageData.dataURL as string)
       }
     }   
   }, [imageData])
@@ -199,12 +209,12 @@ const Draw = memo(props => {
   useEffect(() => {
     // console.log(canvasWidth, canvasHeight)
     // console.log(historyIndex, drawHistory)
-    let ctx = canvasRef.current.getContext('2d')
+    let ctx = canvasRef.current!.getContext('2d')
     let data = drawHistory[historyIndex]
     let img = new Image()
     img.onload = () => {
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight)
-      ctx.drawImage(img, 0, 0)
+      ctx!.clearRect(0, 0, canvasWidth, canvasHeight)
+      ctx!.drawImage(img, 0, 0)
     }
     img.src = data
     //drawImage(data)

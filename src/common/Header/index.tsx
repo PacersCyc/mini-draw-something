@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import styles from './style.scss'
 
 interface HeaderProps {
-  title: string, 
+  title?: string, 
   left: JSX.Element | null,
   leftClass?: string,
   right?: string | number | null | JSX.Element

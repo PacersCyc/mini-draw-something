@@ -2,7 +2,14 @@ import React, { memo } from 'react'
 import classnames from 'classnames'
 import styles from './style.scss'
 
-const LinePicker = memo(props => {
+interface LinePickerProps {
+  lines: number[],
+  color: string,
+  visible: boolean,
+  selectLineWidth: (lineWidth: number) => void
+}
+
+const LinePicker = memo((props: LinePickerProps) => {
   const { lines, color, visible, selectLineWidth } = props
 
   return (

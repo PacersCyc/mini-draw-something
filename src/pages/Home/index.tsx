@@ -4,7 +4,6 @@ import classnames from 'classnames'
 import { Context } from '../../context'
 import { disconnectHandle } from '../../utils/disconnect'
 import styles from './style.scss'
-console.log(styles)
 
 import Header from '@common/Header'
 import { RoomItem, RoomItemInHome } from '../../types/room.d';
@@ -104,7 +103,7 @@ const Home = (props: RouteComponentProps) => {
     })
 
     socket.on('login', (data: Object) => {
-      // console.log(data)
+      console.log(data)
       dispatch({
         type: 'login',
         payload: data

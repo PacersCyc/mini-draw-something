@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useEffect, useState, useMemo, useCallback, memo } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, match, RouteComponentProps } from 'react-router-dom'
 import { InputItem, Button, Modal, Toast } from 'antd-mobile'
 import classnames from 'classnames'
 import { Context } from '../../context'
@@ -8,30 +8,86 @@ import styles from './style.scss'
 
 import Header from '@common/Header'
 import Draw from '../../components/Draw'
+import { PlayerInGame } from '../../types/room.d';
+import { DrawActionData, DrawImageData } from '../../types/game.d'
+
+interface GameMatch extends match {
+  params: {
+    id?: string
+  }
+}
+
+interface GameProps extends RouteComponentProps {
+  match: GameMatch
+}
 
 
-const Game = props => {
+interface ReceiveGameData {
+  time: number
+}
+interface ResScore {
+  [uid:string]: number 
+}
+
+interface GameMessageData {
+  type: string,
+  playerName: string,
+  message?: string,
+  score?: number,
+  resScore?: ResScore
+}
+
+interface GameRoundOverData {
+  answer: string,
+  resScore: ResScore,
+  times: number
+}
+
+interface GameNextPlayData {
+  socketRoom: string,
+  painter: PlayerInGame,
+  players: Array<PlayerInGame>,
+  key: string,
+  isPainter: boolean,
+  gameTime: number
+}
+
+interface GameOverData {
+  message: string,
+  gameData: Object
+}
+
+interface ScrollTextItem {
+  msg: string,
+  type: string
+}
+
+
+const Game = (props: GameProps) => {
   const { state, dispatch } = useContext(Context)
   const { gameInfo, socket, roomData, uid, username } = state
   const { painter, players = [], key, gameTime, isPainter } = gameInfo
+  console.log(gameInfo)
   const msgScroll = useRef(null)
   const msgList = useRef(null)
-  const interval = useRef(null)
+  const interval = useRef<NodeJS.Timeout | null>(null)
   const [imageData, setImageData] = useState({})
   const [actionData, setActionData] = useState({})
   const [answerWord, setAnswerWord] = useState('')
-  const [scrollText, setScrollText] = useState([])
+  const [scrollText, setScrollText] = useState<Array<ScrollTextItem>>([])
   const [answerModalVisible, setAnswerModalVisible] = useState(false)
   const [scoreModalVisible, setScoreModalVisible] = useState(false)
   const [answer, setAnswer] = useState('')
 
   const scrollVisible = useMemo(() => scrollText.length > 0, [scrollText])
 
-  const sendActionData = data => {
+  const sendActionData = (data: DrawActionData) => {
+    // console.log(data)
     socket.emit('drawAction', data)
   }
 
-  const sendImageData = data => {
+  const sendImageData = (data: DrawImageData) => {
+    // console.log(data)
     socket.emit('imageData', data)
   }
 
@@ -65,12 +121,12 @@ const Game = props => {
 
   useEffect(() => {
 
-    socket.on('imageData', data => {
+    socket.on('imageData', (data: DrawImageData) => {
       // console.log(data)
       setImageData(data)
     })
 
-    socket.on('gameData', data => {
+    socket.on('gameData', (data: ReceiveGameData) => {
       // console.log(data)
 
       dispatch({
@@ -80,15 +136,15 @@ const Game = props => {
 
     })
 
-    socket.on('drawAction', data => {
+    socket.on('drawAction', (data: DrawActionData) => {
       // console.log(data)
       setActionData(data)
     })
 
-    socket.on('message', data => {
+    socket.on('message', (data: GameMessageData) => {
       // console.log(data)
       const { type, playerName } = data
-      let newMessage
+      let newMessage:string = ''
 
       switch (type) {
         case 'answer':
@@ -114,11 +170,11 @@ const Game = props => {
       }))
     })
 
-    socket.on('timeover', data => {
+    socket.on('timeover', (data:string) => {
       // console.log(data)
     })
 
-    socket.on('thisOver', data => {
+    socket.on('thisOver', (data: GameRoundOverData) => {
       // console.log(data)
 
       setAnswer(data.answer)
@@ -129,7 +185,7 @@ const Game = props => {
       })
     })
 
-    socket.on('nextPlay', data => {
+    socket.on('nextPlay', (data: GameNextPlayData) => {
       // console.log('下一轮', data)
 
       setImageData({
@@ -143,8 +199,8 @@ const Game = props => {
       })
     })
 
-    socket.on('gameover', data => {
-      // console.log(data)
+    socket.on('gameover', (data: GameOverData) => {
+      console.log(data)
 
       setAnswerModalVisible(false)
       setScoreModalVisible(true)
@@ -155,7 +211,8 @@ const Game = props => {
 
   useEffect(() => {
     // console.log(interval.current)
-    let msgScrollDom = msgScroll.current
+    let msgScrollDom: HTMLElement | null = msgScroll.current
+    let msgListDom: HTMLElement | null = msgList.current
     if (interval.current) {
       if (!scrollText.length) {
         clearInterval(interval.current)
@@ -163,12 +220,12 @@ const Game = props => {
     } else {
       if (scrollText.length) {
         interval.current = setInterval(() => {
-          msgScrollDom.scrollLeft++
-          if (msgScrollDom.scrollLeft >= msgScrollDom.clientWidth + msgList.current.clientWidth) {
+          msgScrollDom!.scrollLeft++
+          if (msgScrollDom!.scrollLeft >= msgScrollDom!.clientWidth + msgListDom!.clientWidth) {
             // console.log(interval.current)
-            clearInterval(interval.current)
+            clearInterval(interval.current as NodeJS.Timeout)
             interval.current = null // clearInterval没作用要显式置空不知道为什么
-            msgScrollDom.scrollLeft = 0
+            msgScrollDom!.scrollLeft = 0
             setScrollText([])
           }
         }, 20)
@@ -176,7 +233,7 @@ const Game = props => {
     }
 
     return () => {
-      clearInterval(interval.current)
+      clearInterval(interval.current as NodeJS.Timeout)
       interval.current = null
     }
   }, [scrollText])
@@ -233,7 +290,7 @@ const Game = props => {
       <div className={styles.playersWrapper}>
         <div className={styles.playersList}>
           {
-            players.map(p => (
+            players.map((p: PlayerInGame) => (
               <div
                 key={p.uid}
                 className={classnames(styles.playerItem, {
@@ -295,7 +352,7 @@ const Game = props => {
       >
         <div>
           {
-            players.sort((a, b) => b.score - a.score).map((p, i) => (
+            players.sort((a: PlayerInGame, b: PlayerInGame) => b.score - a.score).map((p: PlayerInGame, i: number) => (
               <div key={p.uid}>
                 <span>第{i+1}名: </span>
                 <span>{p.username}</span>

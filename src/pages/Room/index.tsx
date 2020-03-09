@@ -6,10 +6,38 @@ import { Context } from '../../context'
 import styles from './style.scss'
 
 import Header from '@common/Header'
+import { RouteComponentProps, match } from 'react-router-dom';
+import { RoomItemInHome, PlayerInRoom } from 'src/types/room'
+
+interface RoomMatch extends match {
+  params: {
+    id?: string
+  }
+}
+
+interface RoomRouteProps extends RouteComponentProps {
+  match: RoomMatch
+}
+
+interface PlayerProps {
+  key: string | number | undefined,
+  isSelf: boolean,
+  isMaster: boolean,
+  uid?: string,
+  username?: string,
+  clientId?: string,
+  status?: number
+}
+
+interface ChatMessage {
+  message: string,
+  isMe: boolean
+}
 
 const MAX_ROOM_MEMBERS_COUNT = 8
 
-const Player = memo(props => {
+const Player = memo((props: PlayerProps) => {
+  console.log(props)
   const { uid, username, isMaster, isSelf } = props
   const cx = classnames(styles.player, {
     [styles.master]: isMaster,
@@ -25,13 +53,15 @@ const Player = memo(props => {
   )
 })
 
-const Room = (props) => {
+const Room = (props: RoomRouteProps) => {
+  console.log(props)
   const { state, dispatch } = useContext(Context)
   const [inputWords, setInputWords] = useState('')
-  const [msgList, setMsgList] = useState([])
+  const [msgList, setMsgList] = useState<Array<ChatMessage>>([])
   const { roomData, socket, username, uid } = state
+  console.log(state)
   const currentRoomId = props.match.params.id
-  const currentRoom = roomData.find(room => room.id === currentRoomId)
+  const currentRoom = roomData.find((room: RoomItemInHome) => room.id === currentRoomId)
   // console.log(currentRoom)
   const isMaster = currentRoom.master.uid === uid
 
@@ -44,6 +74,7 @@ const Room = (props) => {
   const allowStart = len >= 2
 
   const displayMsgList = msgList.filter((item, index) => index <= 7)
+  console.log(displayMsgList)
 
   const startGame = () => {
     if (!allowStart) {
@@ -81,7 +112,13 @@ const Room = (props) => {
   }
 
   useEffect(() => {
-    socket.on('chatMessage', data => {
+    socket.on('chatMessage', (data: {
+      player: {
+        username:string,
+        uid: string
+      },
+      msg: string
+    }) => {
       // console.log('收到消息了', data)
       const { player, msg } = data
       let message = `${player.username}:  ${msg}`
@@ -91,10 +128,10 @@ const Room = (props) => {
         isMe
       }
 
-      setMsgList(list => [msgItem].concat(list))
+      setMsgList((list: Array<ChatMessage>) => [msgItem].concat(list))
     })
 
-    socket.on('leftRoom', data => {
+    socket.on('leftRoom', (data: Object) => {
       // console.log('离开房间', data)
       dispatch({
         type: 'delete_roomId'
@@ -102,7 +139,7 @@ const Room = (props) => {
       props.history.push('/')
     })
 
-    socket.on('startGame', data => {
+    socket.on('startGame', (data: Object) => {
       // console.log('开始游戏', data)
       
       dispatch({
@@ -125,7 +162,7 @@ const Room = (props) => {
 
       <div className={styles.playersList}>
         {
-          displayPlayers.map((player, index) => (
+          displayPlayers.map((player: PlayerInRoom, index: number) => (
             <Player
               key={player.uid || index}
               isMaster={player.uid === currentRoom.master.uid}

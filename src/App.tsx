@@ -55,7 +55,7 @@ function RenderRoute(props: RenderRouteProps) {
   const { state, dispatch } = useContext(Context)
   const { roomData, currentRoomId, gameInfo } = state
   const { path, component, exact, computedMatch, ...rest } = props
-  console.log('state', state)
+  // console.log('state', state)
   // console.log('props', props)
 
   const normalRender = () => (

@@ -8,6 +8,12 @@ export interface PlayerInRoom extends Player {
   status: number
 }
 
+export interface PlayerInGame extends Player {
+  status: number,
+  isPainter: boolean,
+  score: number
+}
+
 export interface RoomItem {
   id: string,
   socketRoom: string,

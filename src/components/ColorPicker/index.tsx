@@ -2,7 +2,13 @@ import React, { memo } from 'react'
 import classnames from 'classnames'
 import styles from './style.scss'
 
-const ColorPicker = memo(props => {
+interface ColorPickerProps {
+  colors: string[],
+  visible: boolean,
+  selectColor: (color: string)=>void
+}
+
+const ColorPicker = memo((props: ColorPickerProps) => {
   const { colors, visible, selectColor } = props
 
   return (
