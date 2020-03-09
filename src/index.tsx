@@ -1,13 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {AppContainer } from 'react-hot-loader'
+import { AppContainer } from 'react-hot-loader'
 import App from './App'
 import './rem'
 
-const render = Component => {
+const render = (Component: React.FC) => {
   ReactDOM.render(
     <AppContainer>
-      <Component/>
+      <Component />
     </AppContainer>,
     document.getElementById('app')
   )

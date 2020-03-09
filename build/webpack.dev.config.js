@@ -1,12 +1,14 @@
 const path = require('path')
 const webpackMerge = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const baseConfig = require('./webpack.base.config')
 
 module.exports = webpackMerge(baseConfig, {
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   plugins: [
+    new ForkTsCheckerWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: '你画我猜',
       template: 'index.html'

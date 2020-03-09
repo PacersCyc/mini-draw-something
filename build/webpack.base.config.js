@@ -9,7 +9,7 @@ const resolveDir = function (dir) {
 
 module.exports = {
   entry: {
-    app: path.join(__dirname, '../', 'src/index.js')
+    app: path.join(__dirname, '../', 'src/index.tsx')
   },
   output: {
     path: path.join(__dirname, '../dist'),
@@ -18,6 +18,14 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.ts(x?)$/,
+        use: [
+          {
+            loader: 'babel-loader'
+          }
+        ]
+      },
       {
         test: /\.js(x?)$/,      
         exclude: /node_modules/,
