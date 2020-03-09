@@ -2,7 +2,14 @@ import React, { memo } from 'react'
 import classnames from 'classnames'
 import styles from './style.scss'
 
-const Header = memo((props) => {
+interface HeaderProps {
+  title: string, 
+  left: JSX.Element | null,
+  leftClass?: string,
+  right?: string | number | null | JSX.Element
+}
+
+const Header = memo((props: HeaderProps) => {
   const {
     title,
     left,

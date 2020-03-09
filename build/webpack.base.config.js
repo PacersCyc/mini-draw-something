@@ -58,6 +58,9 @@ module.exports = {
       },
       {
         test: /\.(sa|sc)ss$/,
+        include: [
+          path.resolve(__dirname, '../src')
+        ],
         exclude: /node_modules/, // 只对自己的样式文件开启css module，防止编译冲突丢失ui样式
         use: [
           {
@@ -67,12 +70,22 @@ module.exports = {
             }
           } ,
           {
+            loader: '@teamsupercell/typings-for-css-modules-loader'
+          },
+          {
             loader: 'css-loader',
             options: {
               modules: true,
               localsConvention: 'camelCase'
             }
           },
+          // {
+          //   loader: 'css-loader',
+          //   options: {
+          //     modules: true,
+          //     localsConvention: 'camelCase'
+          //   }
+          // },
           {
             loader: 'postcss-loader'
           },
@@ -98,7 +111,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
       'react-dom': '@hot-loader/react-dom',
       "@pages": path.resolve(__dirname, '../src/pages'),

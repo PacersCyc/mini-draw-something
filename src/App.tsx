@@ -1,13 +1,23 @@
 import React, { lazy, Suspense, useContext } from 'react'
 import { hot } from 'react-hot-loader'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect, RouteProps, match } from 'react-router-dom'
 import { ContextProvider, Context } from './context/index'
+import { RoomItem } from './types/room'
 import NotFound from '@pages/NotFound'
 require('./iconfont')
 
 // import 'antd-mobile/dist/antd-mobile.css'
-import styles from './App.scss'
+// import styles from './App.scss'
 import './assets/styles/icon.css'
+
+interface ComputedMatch extends match {
+  params: {
+    [k: string]: string
+  }
+}
+interface RenderRouteProps extends RouteProps {
+  computedMatch?: ComputedMatch
+}
 
 function Loading() {
   return (
@@ -21,16 +31,12 @@ const CreateRoom = lazy(() => import('@pages/CreateRoom'))
 const Room = lazy(() => import('@pages/Room'))
 const Game = lazy(() => import('@pages/Game'))
 
-function App(props) {
+function App() {
   return (
     <ContextProvider>
       <Router>
         <Suspense fallback={<Loading/>}>
           <Switch>
-            {/* <Route path="/" component={Home} exact /> */}
-            {/* <Route path="/create-room" component={CreateRoom} />
-            <Route path="/room/:id" component={Room} />
-            <Route path="/game/:id" component={Game} /> */}
             <RenderRoute path="/" component={Home} exact />
             <RenderRoute path="/create-room" component={CreateRoom} />
             <RenderRoute path="/room/:id" component={Room} />
@@ -45,11 +51,11 @@ function App(props) {
 }
 
 // 统一简单鉴权
-function RenderRoute(props) {
+function RenderRoute(props: RenderRouteProps) {
   const { state, dispatch } = useContext(Context)
   const { roomData, currentRoomId, gameInfo } = state
   const { path, component, exact, computedMatch, ...rest } = props
-  // console.log('state', state)
+  console.log('state', state)
   // console.log('props', props)
 
   const normalRender = () => (
@@ -69,7 +75,7 @@ function RenderRoute(props) {
         return normalRender()
       }
     case '/game/:id':
-      if (!gameInfo.key || !gameInfo.painter || !roomData.find(room => room.id === computedMatch.params.id)) {
+      if (!gameInfo.key || !gameInfo.painter || !roomData.find((room: RoomItem) => room.id === computedMatch!.params!.id)) {
         // console.log('进入游戏失败')
         return <Redirect to="/" />
       } else {

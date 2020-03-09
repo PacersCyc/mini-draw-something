@@ -4,10 +4,18 @@ import classnames from 'classnames'
 import { Context } from '../../context'
 import { disconnectHandle } from '../../utils/disconnect'
 import styles from './style.scss'
+console.log(styles)
 
 import Header from '@common/Header'
+import { RoomItem, RoomItemInHome } from '../../types/room.d';
+import { RouteComponentProps } from 'react-router-dom'
 
-const RoomList = memo(props => {
+interface RoomListProps {
+  list: Array<RoomItemInHome>,
+  onEnter: (room: RoomItemInHome) => void
+}
+
+const RoomList = memo((props: RoomListProps) => {
   // console.log('roomlist render')
   const { list, onEnter } = props
 
@@ -19,9 +27,9 @@ const RoomList = memo(props => {
             <div className={classnames(styles.roomInfo, {
               [styles.disableEnter]: room.status === 1
             })}>
-              <span className={styles.roomName}>{room.id}: </span>
+              <span>{room.id}: </span>
               <span className={styles.roomMaster}>{room.name}</span>
-              <span className={styles.roomStatus}>
+              <span>
                 {
                   room.status === 0 ? '准备中' : '游戏中'
                 }
@@ -48,7 +56,7 @@ const RoomList = memo(props => {
   )
 })
 
-const Home = (props) => {
+const Home = (props: RouteComponentProps) => {
   const { history } = props
   const { state, dispatch } = useContext(Context)
   const { uid, username, socket, roomData, onlineCount } = state
@@ -59,7 +67,7 @@ const Home = (props) => {
   const [searchModalVisible, setSearchModalVisible] = useState(false)
   const [searchInput, setSearchInput] = useState('')
 
-  const publicRoomData = useMemo(() => roomData.filter(room => room.type === 0), [roomData])
+  const publicRoomData = useMemo(() => roomData.filter((room: RoomItemInHome) => room.type === 0), [roomData])
   const onEnter = useCallback(room => {
     console.log('enter')
     if (room.status === 1) {
@@ -87,7 +95,7 @@ const Home = (props) => {
 
     socket.emit('updateHome')
 
-    socket.on('homeInfo', data => {
+    socket.on('homeInfo', (data: Object) => {
       // console.log(data)
       dispatch({
         type: 'update_info',
@@ -95,14 +103,14 @@ const Home = (props) => {
       })
     })
 
-    socket.on('login', data => {
+    socket.on('login', (data: Object) => {
       // console.log(data)
       dispatch({
         type: 'login',
         payload: data
       })
     })
-    socket.on('nameUpdated', data => {
+    socket.on('nameUpdated', (data: Object) => {
       // console.log(data)
       dispatch({
         type: 'update_user_name',
@@ -110,12 +118,12 @@ const Home = (props) => {
       })
     })
 
-    socket.on('searchRoom', msg => {
+    socket.on('searchRoom', (msg: string) => {
       setSearchModalVisible(false)
       Toast.info(msg, 1)
     })
 
-    socket.on('enterRoom', data => {
+    socket.on('enterRoom', (data: {id:string}) => {
       // console.log(data)
 
       dispatch({
