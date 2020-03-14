@@ -9,7 +9,7 @@ require('./iconfont')
 import styles from './App.scss'
 import './assets/styles/icon.css'
 
-const BASE_URL = '/mini-draw-something'
+const BASE_URL = '/mini-draw-something/dist'
 
 function Loading() {
   return (
