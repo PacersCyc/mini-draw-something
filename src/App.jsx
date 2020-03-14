@@ -9,6 +9,8 @@ require('./iconfont')
 import styles from './App.scss'
 import './assets/styles/icon.css'
 
+const BASE_URL = '/mini-draw-something'
+
 function Loading() {
   return (
     <div>loading...</div>
@@ -31,12 +33,12 @@ function App(props) {
             {/* <Route path="/create-room" component={CreateRoom} />
             <Route path="/room/:id" component={Room} />
             <Route path="/game/:id" component={Game} /> */}
-            <RenderRoute path="/" component={Home} exact />
-            <RenderRoute path="/create-room" component={CreateRoom} />
-            <RenderRoute path="/room/:id" component={Room} />
-            <RenderRoute path="/game/:id" component={Game} />
-            <Route path="/not-found" component={NotFound} />
-            <Redirect to="/not-found" />
+            <RenderRoute path={`${BASE_URL}/`} component={Home} exact />
+            <RenderRoute path={`${BASE_URL}/create-room`} component={CreateRoom} />
+            <RenderRoute path={`${BASE_URL}/room/:id`} component={Room} />
+            <RenderRoute path={`${BASE_URL}/game/:id`} component={Game} />
+            <Route path={`${BASE_URL}/not-found`} component={NotFound} />
+            <Redirect to={`${BASE_URL}/not-found`} />
           </Switch>
         </Suspense>
       </Router>
@@ -62,16 +64,16 @@ function RenderRoute(props) {
   )
 
   switch(path) {
-    case '/room/:id':
+    case `${BASE_URL}/room/:id`:
       if(!currentRoomId || !roomData.length) {
-        return <Redirect to="/" />
+        return <Redirect to={`${BASE_URL}/`} />
       } else {
         return normalRender()
       }
-    case '/game/:id':
+    case `${BASE_URL}/game/:id`:
       if (!gameInfo.key || !gameInfo.painter || !roomData.find(room => room.id === computedMatch.params.id)) {
         // console.log('进入游戏失败')
-        return <Redirect to="/" />
+        return <Redirect to={`${BASE_URL}/`} />
       } else {
         return normalRender()
       }
