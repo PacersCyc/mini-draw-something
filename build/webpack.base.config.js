@@ -14,7 +14,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, '../dist'),
     filename: 'js/[name].[hash].js',
-    publicPath: '/'
+    publicPath: './'
   },
   module: {
     rules: [
